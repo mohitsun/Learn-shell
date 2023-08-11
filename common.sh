@@ -1,3 +1,5 @@
+log=/tmp/roboshop.log
+
 func_apppreq(){
   echo -e "\e[36m>>>>>>>>>>>>> Create application user <<<<<<<<<<<<<\e[0m"
     useradd roboshop &>>${log}
@@ -53,8 +55,6 @@ nodejs(){
   func_systemd
 
 }
-
-
 
 func_java(){
   echo -e "\e[36m>>>>>>>>>>>>> Create ${component} service <<<<<<<<<<<<<\e[0m"
