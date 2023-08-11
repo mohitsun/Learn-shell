@@ -1,7 +1,7 @@
 nodejs(){
   log=/tmp/roboshop.log
 
-  echo -e "\e[36m>>>>>>>>>>>>> Create user service <<<<<<<<<<<<<\e[0m"
+  echo -e "\e[36m>>>>>>>>>>>>> Create ${component} service <<<<<<<<<<<<<\e[0m"
   cp ${component}.service /etc/systemd/system/${component}.service &>>${log}
 
   echo -e "\e[36m>>>>>>>>>>>>> Create MongoDB repo <<<<<<<<<<<<<\e[0m"
@@ -13,8 +13,8 @@ nodejs(){
   echo -e "\e[36m>>>>>>>>>>>>> Install NodeJS <<<<<<<<<<<<<\e[0m"
   yum install nodejs -y &>>${log}
 
-  echo -e "\e[36m>>>>>>>>>>>>> Create application user <<<<<<<<<<<<<\e[0m"
-  ${component}add roboshop &>>${log}
+  echo -e "\e[36m>>>>>>>>>>>>> Create application ${component} <<<<<<<<<<<<<\e[0m"
+  useradd roboshop &>>${log}
 
   echo -e "\e[36m>>>>>>>>>>>>> Create application directory <<<<<<<<<<<<<\e[0m"
   rm -rf /app
@@ -36,10 +36,10 @@ nodejs(){
   echo -e "\e[36m>>>>>>>>>>>>> Install Mongo client <<<<<<<<<<<<<\e[0m"
   yum install mongodb-org-shell -y &>>${log}
 
-  echo -e "\e[36m>>>>>>>>>>>>> Load user schema <<<<<<<<<<<<<\e[0m"
+  echo -e "\e[36m>>>>>>>>>>>>> Load ${component} schema <<<<<<<<<<<<<\e[0m"
   mongo --host mongodb.mohdevops.online </app/schema/${component}.js &>>${log}
 
-  echo -e "\e[36m>>>>>>>>>>>>> Start user service <<<<<<<<<<<<<\e[0m"
+  echo -e "\e[36m>>>>>>>>>>>>> Start ${component} service <<<<<<<<<<<<<\e[0m"
   systemctl daemon-reload &>>${log}
   systemctl enable ${component} &>>${log}
   systemctl start ${component} &>>${log}
