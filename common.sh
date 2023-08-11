@@ -58,23 +58,23 @@ nodejs(){
 
 func_java(){
   echo -e "\e[36m>>>>>>>>>>>>> Create ${component} service <<<<<<<<<<<<<\e[0m"
-  cp ${component}.service /etc/systemd/system/${component}.service
+  cp ${component}.service /etc/systemd/system/${component}.service &>>${log}
 
   echo -e "\e[36m>>>>>>>>>>>>> Install maven <<<<<<<<<<<<<\e[0m"
-  yum install maven -y
+  yum install maven -y &>>${log}
 
   func_apppreq
 
   echo -e "\e[36m>>>>>>>>>>>>> Build ${component} service <<<<<<<<<<<<<\e[0m"
-  mvn clean package
-  mv target/${component}-1.0.jar shipping.jar
+  mvn clean package &>>${log}
+  mv target/${component}-1.0.jar shipping.jar &>>${log}
 
   echo -e "\e[36m>>>>>>>>>>>>> Install mysql client<<<<<<<<<<<<<\e[0m"
-  yum install mysql -y
+  yum install mysql -y &>>${log}
   # shellcheck disable=SC2261
 
   echo -e "\e[36m>>>>>>>>>>>>> Load schema<<<<<<<<<<<<<\e[0m"
-  mysql -h mysql.mohdevops.online -uroot -pRoboShop@1 < /app/schema/${component}.sql
+  mysql -h mysql.mohdevops.online -uroot -pRoboShop@1 < /app/schema/${component}.sql &>>${log}
 
   func_systemd
 }
