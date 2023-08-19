@@ -85,6 +85,8 @@ func_python(){
   yum install python36 gcc python3-devel -y
 
   func_apppreq
+
+  echo -e "\e[36m>>>>>>>>>>>>> Build ${component} service <<<<<<<<<<<<<\e[0m"
   pip3.6 install -r requirements.txt
 
   func_systemd
