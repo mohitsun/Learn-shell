@@ -22,6 +22,24 @@ func_apppreq(){
     cd /app
 }
 
+func_schema_setup(){
+  if [ "${schema_type}" == "mongodb" ]; then
+    echo -e "\e[36m>>>>>>>>>>>>> Install Mongo client <<<<<<<<<<<<<\e[0m"
+    yum install mongodb-org-shell -y &>>${log}
+
+    echo -e "\e[36m>>>>>>>>>>>>> Load ${component} schema <<<<<<<<<<<<<\e[0m"
+    mongo --host mongodb.mohdevops.online </app/schema/${component}.js &>>${log}
+  fi
+
+  if [ "${schema_type}" == "mysql" ]; then
+      echo -e "\e[36m>>>>>>>>>>>>> Install mysql client<<<<<<<<<<<<<\e[0m"
+      yum install mysql -y &>>${log}
+      # shellcheck disable=SC2261
+
+      echo -e "\e[36m>>>>>>>>>>>>> Load schema<<<<<<<<<<<<<\e[0m"
+      mysql -h mysql.mohdevops.online -uroot -pRoboShop@1 < /app/schema/${component}.sql &>>${log}
+  fi
+}
 func_systemd(){
      echo -e "\e[36m>>>>>>>>>>>>> Start ${component} service <<<<<<<<<<<<<\e[0m"
      systemctl daemon-reload &>>${log}
@@ -47,11 +65,7 @@ nodejs(){
   echo -e "\e[36m>>>>>>>>>>>>> Download NodeJS dependencies <<<<<<<<<<<<<\e[0m"
   npm install &>>${log}
 
-  echo -e "\e[36m>>>>>>>>>>>>> Install Mongo client <<<<<<<<<<<<<\e[0m"
-  yum install mongodb-org-shell -y &>>${log}
-
-  echo -e "\e[36m>>>>>>>>>>>>> Load ${component} schema <<<<<<<<<<<<<\e[0m"
-  mongo --host mongodb.mohdevops.online </app/schema/${component}.js &>>${log}
+  func_schema_setup
 
   func_systemd
 
@@ -69,12 +83,7 @@ func_java(){
   mvn clean package &>>${log}
   mv target/${component}-1.0.jar shipping.jar &>>${log}
 
-  echo -e "\e[36m>>>>>>>>>>>>> Install mysql client<<<<<<<<<<<<<\e[0m"
-  yum install mysql -y &>>${log}
-  # shellcheck disable=SC2261
-
-  echo -e "\e[36m>>>>>>>>>>>>> Load schema<<<<<<<<<<<<<\e[0m"
-  mysql -h mysql.mohdevops.online -uroot -pRoboShop@1 < /app/schema/${component}.sql &>>${log}
+  func_schema_setup
 
   func_systemd
 }
