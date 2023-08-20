@@ -27,26 +27,35 @@ func_apppreq(){
     echo $?
 }
 
+func_exit_status(){
+  if [ $? -eq 0 ]; then
+    echo "\e[32m SUCCESS \e[0m"
+  else
+    echo "\e[31m FAILURE \e[0m"
+  fi
+
+}}
+
 func_schema_setup(){
   if [ "${schema_type}" == "mongodb" ]; then
     echo -e "\e[36m>>>>>>>>>>>>> Install Mongo client <<<<<<<<<<<<<\e[0m"
     yum install mongodb-org-shell -y &>>${log}
-    echo $?
+    func_exit_status
 
     echo -e "\e[36m>>>>>>>>>>>>> Load ${component} schema <<<<<<<<<<<<<\e[0m"
     mongo --host mongodb.mohdevops.online </app/schema/${component}.js &>>${log}
-    echo $?
+    func_exit_status
   fi
 
   if [ "${schema_type}" == "mysql" ]; then
       echo -e "\e[36m>>>>>>>>>>>>> Install mysql client<<<<<<<<<<<<<\e[0m"
       yum install mysql -y &>>${log}
-      echo $?
+      func_exit_status
       # shellcheck disable=SC2261
 
       echo -e "\e[36m>>>>>>>>>>>>> Load schema<<<<<<<<<<<<<\e[0m"
       mysql -h mysql.mohdevops.online -uroot -pRoboShop@1 < /app/schema/${component}.sql &>>${log}
-      echo $?
+      func_exit_status
   fi
 }
 func_systemd(){
@@ -54,7 +63,7 @@ func_systemd(){
      systemctl daemon-reload &>>${log}
      systemctl enable ${component} &>>${log}
      systemctl start ${component} &>>${log}
-     echo $?
+     func_exit_status
 }
 
 nodejs(){
@@ -63,22 +72,21 @@ nodejs(){
 
   echo -e "\e[36m>>>>>>>>>>>>> Create MongoDB repo <<<<<<<<<<<<<\e[0m"
   cp mongo.repo /etc/yum.repos.d/mongo.repo &>>${log}
-
-  echo $?
+  func_exit_status
 
   echo -e "\e[36m>>>>>>>>>>>>> Install  NodeJS repos <<<<<<<<<<<<<\e[0m"
   curl -sL https://rpm.nodesource.com/setup_lts.x | bash &>>${log}
-  echo $?
+  func_exit_status
 
   echo -e "\e[36m>>>>>>>>>>>>> Install NodeJS <<<<<<<<<<<<<\e[0m"
   yum install nodejs -y &>>${log}
-  echo $?
+  func_exit_status
 
   func_apppreq
 
   echo -e "\e[36m>>>>>>>>>>>>> Download NodeJS dependencies <<<<<<<<<<<<<\e[0m"
   npm install &>>${log}
-  echo $?
+  func_exit_status
 
   func_schema_setup
 
