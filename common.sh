@@ -6,7 +6,10 @@ func_apppreq(){
     echo $?
 
   echo -e "\e[36m>>>>>>>>>>>>> Create application user <<<<<<<<<<<<<\e[0m"
-    useradd roboshop &>>${log}
+    id roboshop
+    if [ $? -ne 0 ]; then
+      useradd roboshop &>>${log}
+    fi
     echo $?
 
     echo -e "\e[36m>>>>>>>>>>>>> cleanup existing application content <<<<<<<<<<<<<\e[0m"
