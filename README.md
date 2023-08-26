@@ -7,11 +7,9 @@ today on 18 july shell scripting has been started!!
 List of topics:
 1. Comments
 2. Variables
-3. Identifiers
-4. Keywords
-5. DSA
-6. Arrays
-7. String
-8. Linked List
-9. Tree
-10. Graph 
+3. function
+4. conditions
+5. print
+6. loops
+7. exit status , redirectors & quotes
+8. SED editor
