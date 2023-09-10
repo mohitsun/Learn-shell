@@ -72,7 +72,9 @@ func_systemd(){
 nodejs(){
   log=/tmp/roboshop.log
 
-
+   echo -e "\e[36m>>>>>>>>>>>>> Create Mongodb repo <<<<<<<<<<<<<\e[0m"
+   cp mongo.repo /etc/yum.repos.d/mongo.repo &>>${log}
+   func_exit_status
 
   echo -e "\e[36m>>>>>>>>>>>>> Install  NodeJS repos <<<<<<<<<<<<<\e[0m"
   curl -sL https://rpm.nodesource.com/setup_lts.x | bash &>>${log}
